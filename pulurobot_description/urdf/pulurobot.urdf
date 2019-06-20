@@ -1,0 +1,1025 @@
+<?xml version="1.0"?>
+<robot name="pulurobot">
+  
+  <gazebo reference="link_chassis">
+    <material>Gazebo/Orange</material>
+  </gazebo>
+  <gazebo reference="link_right_free_wheel">
+    <material>Gazebo/Grey</material>
+  </gazebo>
+  <gazebo reference="link_left_free_wheel">
+    <material>Gazebo/Grey</material>
+  </gazebo>
+  <gazebo reference="link_left_link_wheel">
+    <material>Gazebo/Yellow</material>
+  </gazebo>
+  <gazebo reference="link_right_link_wheel">
+    <material>Gazebo/Yellow</material>
+  </gazebo>
+  <gazebo reference="link_right_engine_wheel">
+    <material>Gazebo/Grey</material>
+  </gazebo>
+  <gazebo reference="link_left_engine_wheel">
+    <material>Gazebo/Grey</material>
+  </gazebo>
+
+  <!-- control pulurobot -->
+  <gazebo>
+    <plugin filename="libgazebo_ros_diff_drive.so" name="differential_drive_controller">
+      <alwaysOn>true</alwaysOn>
+      <updateRate>20</updateRate>
+      <leftJoint>joint_left_engine_wheel</leftJoint>
+      <rightJoint>joint_right_engine_wheel</rightJoint>
+      <wheelSeparation>0.34</wheelSeparation>
+      <wheelDiameter>0.125</wheelDiameter>
+      <torque>0.1</torque>
+      <commandTopic>cmd_vel</commandTopic>
+      <odometryTopic>odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
+      <robotBaseFrame>link_chassis</robotBaseFrame>
+    </plugin>
+  </gazebo>
+  
+    <!-- LIDAR -->
+  <gazebo reference="hokuyo_link">
+    <sensor type="gpu_ray" name="head_hokuyo_sensor">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>false</visualize>
+      <update_rate>20</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>1024</samples>
+            <resolution>1</resolution>
+            <min_angle>-3.14</min_angle>
+            <max_angle>3.14</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.10</min>
+          <max>30.0</max>
+          <resolution>0.01</resolution>
+        </range>
+        <noise>
+          <type>gaussian</type>
+          <!-- Noise parameters based on published spec for Hokuyo laser
+               achieving "+-30mm" accuracy at range < 10m.  A mean of 0.0m and
+               stddev of 0.01m will put 99.7% of samples within 0.03m of the true
+               reading. -->
+          <mean>0.0</mean>
+          <stddev>0.01</stddev>
+        </noise>
+      </ray>
+      <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_gpu_laser.so">
+        <topicName>/pulurobot/laser/scan</topicName>
+        <frameName>hokuyo_link</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <!-- sonar -->
+  <gazebo reference="base_sonar_front">        
+   <sensor type="ray" name="sonar1">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>false</visualize>
+      <update_rate>10</update_rate>
+      <ray>
+         <scan>
+            <horizontal>
+               <samples>20</samples>
+               <resolution>1</resolution> 
+               <min_angle>-0.13</min_angle>
+               <max_angle>0.13</max_angle>
+            </horizontal>
+            <vertical>
+               <samples>20</samples>
+               <resolution>1</resolution> 
+               <min_angle>-0.13</min_angle>
+               <max_angle>0.13</max_angle> 
+            </vertical>
+         </scan>
+         <range>
+            <min>0.01</min>
+            <max>2</max>
+            <resolution>0.02</resolution>
+         </range>
+      </ray>
+      <plugin filename="libgazebo_ros_range.so" name="gazebo_ros_range">
+         <gaussianNoise>0.005</gaussianNoise>
+         <alwaysOn>true</alwaysOn>
+         <updateRate>10</updateRate>
+         <topicName>sensor/ir_front</topicName>
+         <frameName>base_sonar_front</frameName>
+         <radiation>INFRARED</radiation>
+         <fov>0.2967</fov>
+      </plugin>
+   </sensor>  
+   </gazebo>
+   
+   <gazebo reference="base_sonar_front2">        
+   <sensor type="ray" name="sonar2">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>false</visualize>
+      <update_rate>10</update_rate>
+      <ray>
+         <scan>
+            <horizontal>
+               <samples>20</samples>
+               <resolution>1</resolution> 
+               <min_angle>-0.13</min_angle>
+               <max_angle>0.13</max_angle>
+            </horizontal>
+            <vertical>
+               <samples>20</samples>
+               <resolution>1</resolution> 
+               <min_angle>-0.13</min_angle>
+               <max_angle>0.13</max_angle> 
+            </vertical>
+         </scan>
+         <range>
+            <min>0.01</min>
+            <max>2</max>
+            <resolution>0.02</resolution>
+         </range>
+      </ray>
+      <plugin filename="libgazebo_ros_range.so" name="gazebo_ros_range">
+         <gaussianNoise>0.005</gaussianNoise>
+         <alwaysOn>true</alwaysOn>
+         <updateRate>10</updateRate>
+         <topicName>sensor/ir_front</topicName>
+         <frameName>base_sonar_front2</frameName>
+         <radiation>INFRARED</radiation>
+         <fov>0.2967</fov>
+      </plugin>
+   </sensor>  
+   </gazebo>
+   
+   <gazebo reference="base_sonar_front3">        
+   <sensor type="ray" name="sonar3">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>false</visualize>
+      <update_rate>10</update_rate>
+      <ray>
+         <scan>
+            <horizontal>
+               <samples>20</samples>
+               <resolution>1</resolution> 
+               <min_angle>-0.13</min_angle>
+               <max_angle>0.13</max_angle>
+            </horizontal>
+            <vertical>
+               <samples>20</samples>
+               <resolution>1</resolution> 
+               <min_angle>-0.13</min_angle>
+               <max_angle>0.13</max_angle> 
+            </vertical>
+         </scan>
+         <range>
+            <min>0.01</min>
+            <max>2</max>
+            <resolution>0.02</resolution>
+         </range>
+      </ray>
+      <plugin filename="libgazebo_ros_range.so" name="gazebo_ros_range">
+         <gaussianNoise>0.005</gaussianNoise>
+         <alwaysOn>true</alwaysOn>
+         <updateRate>10</updateRate>
+         <topicName>sensor/ir_front</topicName>
+         <frameName>base_sonar_front3</frameName>
+         <radiation>INFRARED</radiation>
+         <fov>0.2967</fov>
+      </plugin>
+   </sensor>  
+   </gazebo>
+   
+   <!-- camera -->
+  <gazebo reference="camera">  
+      <sensor type="depth" name="camera">
+        <always_on>true</always_on>
+        <update_rate>5</update_rate>
+        <camera>
+          <horizontal_fov>1</horizontal_fov>
+          <image>
+            <format>R8G8B8</format>
+            <width>100</width>
+            <height>300</height>
+          </image>
+          <clip>
+            <near>0.05</near>
+            <far>2</far>
+          </clip>
+        </camera>
+        <plugin name="kinect_camera_controller" filename="libgazebo_ros_depth_camera.so">
+          <cameraName>camera</cameraName>
+          <alwaysOn>true</alwaysOn>
+          <updateRate>5</updateRate>
+          <imageTopicName>rgb/image_raw</imageTopicName>
+          <depthImageTopicName>depth/image_raw</depthImageTopicName>
+          <pointCloudTopicName>depth/points</pointCloudTopicName>
+          <cameraInfoTopicName>rgb/camera_info</cameraInfoTopicName>
+          <depthImageCameraInfoTopicName>depth/camera_info</depthImageCameraInfoTopicName>
+          <frameName>camera</frameName>
+          <baseline>0.2</baseline>
+          <distortion_k1>0.0</distortion_k1>
+          <distortion_k2>0.0</distortion_k2>
+          <distortion_k3>0.0</distortion_k3>
+          <distortion_t1>0.0</distortion_t1>
+          <distortion_t2>0.0</distortion_t2>
+          <pointCloudCutoff>0.05</pointCloudCutoff>
+          <CxPrime>0</CxPrime>
+          <Cx>0</Cx>
+          <Cy>0</Cy>
+        </plugin>
+      </sensor>
+    </gazebo>
+    
+    <gazebo reference="camera2">  
+      <sensor type="depth" name="camera2">
+        <always_on>true</always_on>
+        <update_rate>5</update_rate>
+        <camera>
+          <horizontal_fov>1</horizontal_fov>
+          <image>
+            <format>R8G8B8</format>
+            <width>100</width>
+            <height>300</height>
+          </image>
+          <clip>
+            <near>0.05</near>
+            <far>2</far>
+          </clip>
+        </camera>
+        <plugin name="kinect_camera_controller" filename="libgazebo_ros_depth_camera.so">
+          <cameraName>camera2</cameraName>
+          <alwaysOn>true</alwaysOn>
+          <updateRate>5</updateRate>
+          <imageTopicName>rgb/image_raw</imageTopicName>
+          <depthImageTopicName>depth/image_raw</depthImageTopicName>
+          <pointCloudTopicName>depth/points</pointCloudTopicName>
+          <cameraInfoTopicName>rgb/camera_info</cameraInfoTopicName>
+          <depthImageCameraInfoTopicName>depth/camera_info</depthImageCameraInfoTopicName>
+          <frameName>camera2</frameName>
+          <baseline>0.2</baseline>
+          <distortion_k1>0.0</distortion_k1>
+          <distortion_k2>0.0</distortion_k2>
+          <distortion_k3>0.0</distortion_k3>
+          <distortion_t1>0.0</distortion_t1>
+          <distortion_t2>0.0</distortion_t2>
+          <pointCloudCutoff>0.05</pointCloudCutoff>
+          <CxPrime>0</CxPrime>
+          <Cx>0</Cx>
+          <Cy>0</Cy>
+        </plugin>
+      </sensor>
+    </gazebo>
+    
+    <gazebo reference="camera3">  
+      <sensor type="depth" name="camera3">
+        <always_on>true</always_on>
+        <update_rate>5</update_rate>
+        <camera>
+          <horizontal_fov>1</horizontal_fov>
+          <image>
+            <format>R8G8B8</format>
+            <width>100</width>
+            <height>300</height>
+          </image>
+          <clip>
+            <near>0.05</near>
+            <far>2</far>
+          </clip>
+        </camera>
+        <plugin name="kinect_camera_controller" filename="libgazebo_ros_depth_camera.so">
+          <cameraName>camera3</cameraName>
+          <alwaysOn>true</alwaysOn>
+          <updateRate>5</updateRate>
+          <imageTopicName>rgb/image_raw</imageTopicName>
+          <depthImageTopicName>depth/image_raw</depthImageTopicName>
+          <pointCloudTopicName>depth/points</pointCloudTopicName>
+          <cameraInfoTopicName>rgb/camera_info</cameraInfoTopicName>
+          <depthImageCameraInfoTopicName>depth/camera_info</depthImageCameraInfoTopicName>
+          <frameName>camera3</frameName>
+          <baseline>0.2</baseline>
+          <distortion_k1>0.0</distortion_k1>
+          <distortion_k2>0.0</distortion_k2>
+          <distortion_k3>0.0</distortion_k3>
+          <distortion_t1>0.0</distortion_t1>
+          <distortion_t2>0.0</distortion_t2>
+          <pointCloudCutoff>0.05</pointCloudCutoff>
+          <CxPrime>0</CxPrime>
+          <Cx>0</Cx>
+          <Cy>0</Cy>
+        </plugin>
+      </sensor>
+    </gazebo>
+    
+    <gazebo reference="camera4">  
+      <sensor type="depth" name="camera4">
+        <always_on>true</always_on>
+        <update_rate>5</update_rate>
+        <camera>
+          <horizontal_fov>1</horizontal_fov>
+          <image>
+            <format>R8G8B8</format>
+            <width>100</width>
+            <height>300</height>
+          </image>
+          <clip>
+            <near>0.05</near>
+            <far>2</far>
+          </clip>
+        </camera>
+        <plugin name="kinect_camera_controller" filename="libgazebo_ros_depth_camera.so">
+          <cameraName>camera4</cameraName>
+          <alwaysOn>true</alwaysOn>
+          <updateRate>5</updateRate>
+          <imageTopicName>rgb/image_raw</imageTopicName>
+          <depthImageTopicName>depth/image_raw</depthImageTopicName>
+          <pointCloudTopicName>depth/points</pointCloudTopicName>
+          <cameraInfoTopicName>rgb/camera_info</cameraInfoTopicName>
+          <depthImageCameraInfoTopicName>depth/camera_info</depthImageCameraInfoTopicName>
+          <frameName>camera4</frameName>
+          <baseline>0.2</baseline>
+          <distortion_k1>0.0</distortion_k1>
+          <distortion_k2>0.0</distortion_k2>
+          <distortion_k3>0.0</distortion_k3>
+          <distortion_t1>0.0</distortion_t1>
+          <distortion_t2>0.0</distortion_t2>
+          <pointCloudCutoff>0.05</pointCloudCutoff>
+          <CxPrime>0</CxPrime>
+          <Cx>0</Cx>
+          <Cy>0</Cy>
+        </plugin>
+      </sensor>
+    </gazebo>
+
+  
+  <!-- pulurobot link and joint -->
+   <link name="link_chassis">
+    <!-- pose and inertial -->
+    <pose>0 0 0.1 0 0 0</pose>
+    <inertial>
+      <mass value="15"/>
+      <origin rpy="0 0 0" xyz="0 0 0.1"/>
+      <inertia ixx="0.0395416666667" ixy="0" ixz="0" iyy="0.106208333333" iyz="0" izz="0.106208333333"/>
+    </inertial>
+    <!-- down_plate -->
+    <collision name="down_plate_base">
+      <origin rpy="0 0 0" xyz="0 0 0.04"/>
+      <geometry>
+        <box size="0.65 0.45 0.002"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0.04"/>
+      <geometry>
+        <box size="0.65 0.45 0.002"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <collision name="down_plate_side1">
+      <origin rpy="0 0 0" xyz="0.325 0 0.08"/>
+      <geometry>
+        <box size="0.002 0.45 0.08"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0 0 0" xyz="0.325 0 0.08"/>
+      <geometry>
+        <box size="0.002 0.45 0.08"/>
+      </geometry>
+    </visual>
+    <collision name="down_plate_side2">
+      <origin rpy="0 0 0" xyz="-0.325 0 0.08"/>
+      <geometry>
+        <box size="0.002 0.45 0.08"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.325 0 0.08"/>
+      <geometry>
+        <box size="0.002 0.45 0.08"/>
+      </geometry>
+    </visual>
+    <collision name="down_plate_side3">
+      <origin rpy="0 0 0" xyz="0 0.225 0.08"/>
+      <geometry>
+        <box size="0.64 0.002 0.08"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0.225 0.08"/>
+      <geometry>
+        <box size="0.65 0.002 0.08"/>
+      </geometry>
+    </visual>
+    <collision name="down_plate_side4">
+      <origin rpy="0 0 0" xyz="0 -0.225 0.08"/>
+      <geometry>
+        <box size="0.64 0.002 0.08"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 -0.225 0.08"/>
+      <geometry>
+        <box size="0.65 0.002 0.08"/>
+      </geometry>
+    </visual>
+
+    <!-- up_plate -->
+    <collision name="up_plate_base">
+      <origin rpy="0 0 0" xyz="0 0 0.85"/>
+      <geometry>
+        <box size="0.65 0.45 0.002"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0.85"/>
+      <geometry>
+        <box size="0.65 0.45 0.002"/>
+      </geometry>
+    </visual>
+    <collision name="up_plate_side1">
+      <origin rpy="0 0 0" xyz="0.325 0 0.87"/>
+      <geometry>
+        <box size="0.002 0.45 0.04"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0 0 0" xyz="0.325 0 0.87"/>
+      <geometry>
+        <box size="0.002 0.45 0.04"/>
+      </geometry>
+    </visual>
+    <collision name="up_plate_side2">
+      <origin rpy="0 0 0" xyz="-0.325 0 0.87"/>
+      <geometry>
+        <box size="0.002 0.45 0.04"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.325 0 0.87"/>
+      <geometry>
+        <box size="0.002 0.45 0.04"/>
+      </geometry>
+    </visual>
+    <collision name="up_plate_side3">
+      <origin rpy="0 0 0" xyz="0 0.225 0.87"/>
+      <geometry>
+        <box size="0.64 0.002 0.04"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0.225 0.87"/>
+      <geometry>
+        <box size="0.65 0.002 0.04"/>
+      </geometry>
+    </visual>
+    <collision name="up_plate_side4">
+      <origin rpy="0 0 0" xyz="0 -0.225 0.87"/>
+      <geometry>
+        <box size="0.64 0.002 0.04"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 -0.225 0.87"/>
+      <geometry>
+        <box size="0.65 0.002 0.04"/>
+      </geometry>
+    </visual>
+        
+    <!-- separation down_plate and up_plate -->
+    <collision name="separation1">
+      <origin rpy="0 0 0" xyz="0.315 0.215 0.465"/>
+      <geometry>
+        <box size="0.02 0.02 0.85"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0 0 0" xyz="0.315 0.215 0.465"/>
+      <geometry>
+        <box size="0.02 0.02 0.85"/>
+      </geometry>
+    </visual>
+    <collision name="separation2">
+      <origin rpy="0 0 0" xyz="0.315 -0.215 0.465"/>
+      <geometry>
+        <box size="0.02 0.02 0.85"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0 0 0" xyz="0.315 -0.215 0.465"/>
+      <geometry>
+        <box size="0.02 0.02 0.85"/>
+      </geometry>
+    </visual>
+    <collision name="separation3">
+      <origin rpy="0 0 0" xyz="-0.315 0.215 0.465"/>
+      <geometry>
+        <box size="0.02 0.02 0.85"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.315 0.215 0.465"/>
+      <geometry>
+        <box size="0.02 0.02 0.85"/>
+      </geometry>
+    </visual>
+    <collision name="separation4">
+      <origin rpy="0 0 0" xyz="-0.315 -0.215 0.465"/>
+      <geometry>
+        <box size="0.02 0.02 0.85"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.315 -0.215 0.465"/>
+      <geometry>
+        <box size="0.02 0.02 0.85"/>
+      </geometry>
+    </visual>
+            
+    <!-- engine_plate -->
+    <collision name="engine_plate_base">
+      <origin rpy="0 0 0" xyz="0.175 0 -0.08"/>
+      <geometry>
+        <box size="0.30 0.2115 0.16"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0 0 0" xyz="0.175 0 -0.08"/>
+      <geometry>
+        <box size="0.30 0.2115 0.16"/>
+      </geometry>
+    </visual>        
+    <collision name="engine_plate_up">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.65 0.45 0.002"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.65 0.45 0.002"/>
+      </geometry>
+    </visual>        
+    <collision name="engine_plate_side">
+      <origin rpy="0 0 0" xyz="0.325 0 -0.08"/>
+      <geometry>
+        <box size="0.002 0.45 0.16"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0 0 0" xyz="0.325 0 -0.08"/>
+      <geometry>
+        <box size="0.002 0.45 0.16"/>
+      </geometry>
+    </visual>
+    <collision name="engine_plate_down">
+      <origin rpy="0 0 0" xyz="0 0 -0.165"/>
+      <geometry>
+        <box size="0.65 0.02 0.01"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 -0.165"/>
+      <geometry>
+        <box size="0.65 0.02 0.01"/>
+      </geometry>
+    </visual>
+    <collision name="engine_plate_socle_free_wheel1">
+      <origin rpy="0 0 0" xyz="-0.225 0 -0.09"/>
+      <geometry>
+        <box size="0.2 0.02 0.14"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.225 0 -0.09"/>
+      <geometry>
+        <box size="0.2 0.02 0.14"/>
+      </geometry>
+    </visual>
+    <collision name="engine_plate_free_wheel2">
+      <origin rpy="0 0 0" xyz="-0.225 0 -0.02"/>
+      <geometry>
+        <box size="0.2 0.45 0.002"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.225 0 -0.02"/>
+      <geometry>
+        <box size="0.2 0.45 0.002"/>
+      </geometry>
+    </visual>
+    
+   </link>
+   
+  <!-- link engine wheels -->
+  <link name="link_right_engine_wheel">
+    <inertial>
+      <mass value="2"/>
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <inertia ixx="0.000526666666667" ixy="0" ixz="0" iyy="0.000526666666667" iyz="0" izz="0.001"/>
+    </inertial>
+    <collision name="link_right_engine_wheel_collision">
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.04" radius="0.125"/>
+      </geometry>
+    </collision>
+    <visual name="link_right_engine_wheel_visual">
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.04" radius="0.125"/>
+      </geometry>
+    </visual>
+    <collision name="link_right_engine_wheel_collision1">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.1 0.02 0.1"/>
+      </geometry>
+    </collision>
+    <visual name="link_right_engine_wheel_visual1">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.1 0.05 0.1"/>
+      </geometry>
+    </visual>
+  </link>
+  
+  <joint name="joint_right_engine_wheel" type="continuous">
+    <origin rpy="0 0 0" xyz="0.17 0.17 -0.16"/>
+    <child link="link_right_engine_wheel"/>
+    <parent link="link_chassis"/>
+    <axis rpy="0 0 0" xyz="0 1 0"/>
+    <joint_properties damping="1.0" friction="10.0"/>
+  </joint>
+  
+  <link name="link_left_engine_wheel">
+    <inertial>
+      <mass value="2"/>
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <inertia ixx="0.000526666666667" ixy="0" ixz="0" iyy="0.000526666666667" iyz="0" izz="0.001"/>
+    </inertial>
+    <collision name="link_left_engine_wheel_collision">
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.04" radius="0.125"/>
+      </geometry>
+    </collision>
+    <visual name="link_left_engine_wheel_visual">
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.04" radius="0.125"/>
+      </geometry>
+    </visual>
+    <collision name="link_left_engine_wheel_collision1">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.1 0.05 0.1"/>
+      </geometry>
+    </collision>
+    <visual name="link_left_engine_wheel_visual1">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.1 0.05 0.1"/>
+      </geometry>
+    </visual>
+  </link>
+  
+  <joint name="joint_left_engine_wheel" type="continuous">
+    <origin rpy="0 0 0" xyz="0.17 -0.17 -0.16"/>
+    <child link="link_left_engine_wheel"/>
+    <parent link="link_chassis"/>
+    <axis rpy="0 0 0" xyz="0 1 0"/>
+    <joint_properties friction="10.0"/>
+  </joint>
+  
+  <!-- link link wheel -->
+    <link name="link_right_link_wheel">
+    <inertial>
+      <mass value="1"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertia ixx="0.000526666666667" ixy="0" ixz="0" iyy="0.000526666666667" iyz="0" izz="0.001"/>
+    </inertial>
+    <collision name="link_right_link_wheel_collision">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.16" radius="0.02"/>
+      </geometry>
+    </collision>
+    <visual name="link_right_link_wheel_visual">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.13" radius="0.02"/>
+      </geometry>
+    </visual>
+  </link>
+  
+  <joint name="joint_right_link_wheel" type="continuous">
+    <origin rpy="0 0 0" xyz="-0.225 -0.17 -0.085"/>
+    <child link="link_right_link_wheel"/>
+    <parent link="link_chassis"/>
+    <axis rpy="0 0 0" xyz="0 0 1"/>
+    <joint_properties damping="0.0" friction="100000.0"/>
+  </joint>
+  
+   <link name="link_left_link_wheel">
+    <inertial>
+      <mass value="1"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertia ixx="0.000526666666667" ixy="0" ixz="0" iyy="0.000526666666667" iyz="0" izz="0.001"/>
+    </inertial>
+    <collision name="link_left_link_wheel_collision">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.16" radius="0.02"/>
+      </geometry>
+    </collision>
+    <visual name="link_left_link_wheel_visual">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.13" radius="0.02"/>
+      </geometry>
+    </visual>
+  </link>
+  
+  <joint name="joint_left_link_wheel" type="continuous">
+    <origin rpy="0 0 0" xyz="-0.225 0.17 -0.085"/>
+    <child link="link_left_link_wheel"/>
+    <parent link="link_chassis"/>
+    <axis rpy="0 0 0" xyz="0 0 1"/>
+    <joint_properties damping="0.0" friction="100000.0"/>
+  </joint>
+  
+  <!-- link free wheels -->
+  <link name="link_left_free_wheel">
+    <inertial>
+      <mass value="1"/>
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <inertia ixx="0.000526666666667" ixy="0" ixz="0" iyy="0.000526666666667" iyz="0" izz="0.001"/>
+    </inertial>
+    <collision name="link_left_free_wheel_collision">
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.02" radius="0.1"/>
+      </geometry>
+    </collision>
+    <visual name="link_left_free_wheel_visual">
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.02" radius="0.1"/>
+      </geometry>
+    </visual>
+  </link>
+  
+  <joint name="joint_left_free_wheel" type="continuous">
+    <origin rpy="0 0 0" xyz="0.05 0 -0.1"/>
+    <child link="link_left_free_wheel"/>
+    <parent link="link_left_link_wheel"/>
+    <axis rpy="0 0 0" xyz="0 1 0"/>
+    <joint_properties damping="0.0" friction="100000.0"/>
+  </joint>
+  
+  <link name="link_right_free_wheel">
+    <inertial>
+      <mass value="1"/>
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <inertia ixx="0.000526666666667" ixy="0" ixz="0" iyy="0.000526666666667" iyz="0" izz="0.001"/>
+    </inertial>
+    <collision name="link_right_free_wheel_collision">
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.02" radius="0.1"/>
+      </geometry>
+    </collision>
+    <visual name="link_right_free_wheel_visual">
+      <origin rpy="0 1.5707 1.5707" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.02" radius="0.1"/>
+      </geometry>
+    </visual>
+  </link>
+  
+  <joint name="joint_right_free_wheel" type="continuous">
+    <origin rpy="0 0 0" xyz="0.05 0 -0.1"/>
+    <child link="link_right_free_wheel"/>
+    <parent link="link_right_link_wheel"/>
+    <axis rpy="0 0 0" xyz="0 1 0"/>
+    <joint_properties damping="0.0" friction="100000.0"/>
+  </joint>
+
+  <!-- Hokuyo Laser -->
+  <joint name="hokuyo_joint" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin xyz="0.225 0 0.01" rpy="0 0 0"/>
+    <parent link="link_chassis"/>
+    <child link="hokuyo_link"/>
+  </joint>
+
+  <link name="hokuyo_link">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+       <cylinder length="0.02" radius="0.025"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder length="0.02" radius="0.025"/>
+      </geometry>
+    </visual>
+
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+
+  <!-- link sonar sensor -->
+  <joint name="sonar_front_joint" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin rpy="0 0 0" xyz="0.335 0 -0.05" />
+    <parent link="link_chassis"/>
+    <child link="base_sonar_front"/>
+  </joint>
+
+  <link name="base_sonar_front">
+    <collision>
+      <origin xyz="-0.005 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.05 0.02"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.02 0.05 0.02"/>
+      </geometry>
+    </visual>
+
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+ </link>
+
+  <joint name="sonar_front_joint2" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin rpy="0 0 0" xyz="0.335 -0.11 -0.1" />
+    <parent link="link_chassis"/>
+    <child link="base_sonar_front2"/>
+  </joint>
+
+  <link name="base_sonar_front2">
+    <collision>
+      <origin xyz="-0.005 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.02 0.05"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.02 0.02 0.05"/>
+      </geometry>
+    </visual>
+
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+ </link>
+ 
+  <joint name="sonar_front_joint3" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin rpy="0 0 0" xyz="0.335 0.11 -0.1" />
+    <parent link="link_chassis"/>
+    <child link="base_sonar_front3"/>
+  </joint>
+
+  <link name="base_sonar_front3">
+    <collision>
+      <origin xyz="-0.005 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.02 0.05"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.02 0.02 0.05"/>
+      </geometry>
+    </visual>
+
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+ </link>
+
+  <!-- link camera sensor -->
+  <link name="camera">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+    </collision>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+            <box size="0.01 0.01 0.01"/>
+        </geometry>
+      </visual>
+
+      <inertial>
+        <mass value="1e-5" />
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+      </inertial>
+    </link>
+
+    <joint name="sensor_joint" type="fixed">
+        <parent link="link_chassis"/>
+        <child link="camera"/>
+        <origin rpy="0 0 0" xyz="0.33 -0.165 0"/>
+        <axis xyz="0 1 0" />
+    </joint>
+    
+    <link name="camera2">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+            <box size="0.01 0.01 0.01"/>
+        </geometry>
+      </visual>
+
+      <inertial>
+        <mass value="1e-5" />
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+      </inertial>
+    </link>
+
+    <joint name="sensor_joint2" type="fixed">
+        <parent link="link_chassis"/>
+        <child link="camera2"/>
+        <origin rpy="0 0 0" xyz="0.33 0.165 0"/>
+        <axis xyz="0 1 0" />
+    </joint>
+    
+    <link name="camera3">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+            <box size="0.01 0.01 0.01"/>
+        </geometry>
+      </visual>
+
+      <inertial>
+        <mass value="1e-5" />
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+      </inertial>
+    </link>
+
+    <joint name="sensor_joint3" type="fixed">
+        <parent link="link_chassis"/>
+        <child link="camera3"/>
+        <origin rpy="0 0 -1.57" xyz="-0.085 -0.23 0"/>
+        <axis xyz="0 1 0" />
+    </joint>
+    
+    <link name="camera4">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+            <box size="0.01 0.01 0.01"/>
+        </geometry>
+      </visual>
+
+      <inertial>
+        <mass value="1e-5" />
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+      </inertial>
+    </link>
+
+    <joint name="sensor_joint4" type="fixed">
+        <parent link="link_chassis"/>
+        <child link="camera4"/>
+        <origin rpy="0 0 1.57" xyz="-0.085 0.23 0"/>
+        <axis xyz="0 1 0" />
+    </joint>
+
+</robot>

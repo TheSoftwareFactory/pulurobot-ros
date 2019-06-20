@@ -1,0 +1,112 @@
+<launch>
+
+<!-- these are the arguments you can pass this launch file, for example paused:=true -->
+  <arg name="paused" default="false"/>
+  <arg name="use_sim_time" default="true"/>
+  <arg name="gui" default="true"/>
+  <arg name="headless" default="false"/>
+  <arg name="debug" default="false"/>
+
+  <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find pulurobot_gazebo)/worlds/world_final_version.world"/>
+    <arg name="debug" value="$(arg debug)" />
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+    <arg name="headless" value="$(arg headless)"/>
+  </include>
+
+  <!-- Load the URDF into the ROS Parameter Server -->
+  <param name="robot_description"
+    command="cat '$(find pulurobot_description)/urdf/pulurobot.urdf'" />
+
+  <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+    args="-urdf -x 4.0 -y 1.7 -z 0.3 -model pulurobot -param robot_description"/>
+
+  <!-- ros_control pulurobot launch file -->
+  <!--include file="$(find pulurobot_control)/launch/pulurobot_control.launch" /-->
+
+  <!-- Load the URDF into the ROS Parameter Server -->
+  <param name="robot_description"
+    command="cat '$(find pulurobot_description)/urdf/pulurobot.urdf'" />
+
+  <!-- send fake joint values -->
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <param name="use_gui" value="TRUE"/>
+  </node>
+
+  <!-- Combine joint values -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
+    <remap from="robot_descripton" to="different_robot_description"/>
+  </node>
+
+  <!-- Show in Rviz   -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find pulurobot_description)/launch/pulurobot.rviz"/>
+
+  <arg name="scan_topic" default="/pulurobot/laser/scan" />
+
+  <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
+
+    <param name="odom_frame" value="odom"/>
+    <param name="base_frame" value="link_chassis"/>
+    <param name="map_frame" value="map"/>
+
+    <!-- Process 1 out of every this many scans (set it to a higher number to skip more scans)  -->
+    <param name="throttle_scans" value="1"/>
+
+    <param name="map_update_interval" value="0.5"/> <!-- default: 5.0 -->
+
+    <!-- The maximum usable range of the laser. A beam is cropped to this value.  -->
+    <param name="maxUrange" value="30.0"/>
+
+    <!-- The maximum range of the sensor. If regions with no obstacles within the range of the sensor should appear as free space in the map, set maxUrange < maximum range of the real sensor <= maxRange -->
+    <param name="maxRange" value="30.0"/>
+
+    <param name="sigma" value="0.05"/>
+    <param name="kernelSize" value="1"/>
+    <param name="lstep" value="0.05"/>
+    <param name="astep" value="0.05"/>
+    <param name="iterations" value="5"/>
+    <param name="lsigma" value="0.075"/>
+    <param name="ogain" value="3.0"/>
+    <param name="minimumScore" value="0.0"/>
+    <!-- Number of beams to skip in each scan. -->
+    <param name="lskip" value="0"/>
+
+    <param name="srr" value="0.01"/>
+    <param name="srt" value="0.02"/>
+    <param name="str" value="0.01"/>
+    <param name="stt" value="0.02"/>
+
+    <!-- Process a scan each time the robot translates this far  -->
+    <param name="linearUpdate" value="0.1"/>
+
+    <!-- Process a scan each time the robot rotates this far  -->
+    <param name="angularUpdate" value="0.05"/>
+
+    <param name="temporalUpdate" value="10"/>
+    <param name="resampleThreshold" value="0.5"/>
+
+    <!-- Number of particles in the filter. default 30        -->
+    <param name="particles" value="10"/>
+
+<!-- Initial map size  -->
+    <param name="xmin" value="-10.0"/>
+    <param name="ymin" value="-10.0"/>
+    <param name="xmax" value="10.0"/>
+    <param name="ymax" value="10.0"/>
+
+    <!-- Processing parameters (resolution of the map)  -->
+    <param name="delta" value="0.02"/>
+
+    <param name="llsamplerange" value="0.01"/>
+    <param name="llsamplestep" value="0.01"/>
+    <param name="lasamplerange" value="0.005"/>
+    <param name="lasamplestep" value="0.005"/>
+
+    <remap from="scan" to="$(arg scan_topic)"/>
+  </node>
+
+</launch>

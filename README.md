@@ -61,7 +61,7 @@ How to launch pulu:
 
 First step before do anything else when you launch any terminal:
 
-$ source catkin_ws/devel/setyup.bash
+$ source catkin_ws/devel/setup.bash
 
 
 after that you can do the folliwing things (if you want to use different application together you have to use an other terminal and don't forget to do the launch's first step for each terminal):

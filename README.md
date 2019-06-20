@@ -90,7 +90,7 @@ $ rosrun teleop_twist_keyboard teleop_twist_keyboard.py
 
 For launch the frontier_explorer:
 
-$ roslaunch frontier_exploration no_global_map.launch
+$ roslaunch pulurobot_2dnav no_global_map.launch
 
 
 For use the keyboard teleoperation:
